@@ -11,15 +11,16 @@ Menu::~Menu() {
 
 // Task 3.3
 void Menu::addFood(const Food& food) {
-    if(findFoodIndex(food.getFoodId())){return;}
+    if(findFoodIndex(food.getFoodId())!=-1){return;}
     if(isFull()){resizeArray();}
     foodItems[currentSize++] = food;
 }
 
 // Task 3.4
 bool Menu::removeFood(int id) {
-    if(findFoodIndex(id)){
-        for(int i = id ;i<currentSize;i++){
+    int index = findFoodIndex(id);
+    if(index!=-1){
+        for(int i = index ;i<currentSize-1;i++){
             foodItems[i] = foodItems[i+1];
         }
         currentSize--;

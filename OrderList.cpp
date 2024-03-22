@@ -8,10 +8,12 @@ OrderList::OrderList() : head(nullptr) {}
 
 // Task 5.2
 OrderList::~OrderList() {
-    while(head->next!=nullptr){
-        OrderNode* tp = head->next->next;
-        delete head->next;
-        head->next = tp;
+    if(head){
+        while(head->next!=nullptr){
+            OrderNode* tp = head->next->next;
+            delete head->next;
+            head->next = tp;
+        }
     }
     delete head;
 }
@@ -19,7 +21,11 @@ OrderList::~OrderList() {
 // Task 5.3
 void OrderList::addOrder(const Order& order) {
     OrderNode *ptr = head;
-    while(ptr->next!=nullptr){
+    if(!ptr){
+        head=new OrderNode(order);
+        return;
+    }
+    while(ptr->next){
         ptr = ptr->next;
     }
     ptr->next = new OrderNode(order);
@@ -28,7 +34,13 @@ void OrderList::addOrder(const Order& order) {
 // Task 5.4
 bool OrderList::removeOrder(int orderId) {
     OrderNode *ptr = head;
-    while(ptr->next!=nullptr){
+    if(!ptr){return false;}
+    if(ptr->order.getOrderId()==orderId){
+        head = ptr->next;
+        delete ptr;
+        return true;
+    }
+    while(ptr->next){
         if(orderId==ptr->next->order.getOrderId()){
             OrderNode *temp = ptr->next->next;
             delete ptr->next;
@@ -43,9 +55,10 @@ bool OrderList::removeOrder(int orderId) {
 // Task 5.5
 Order* OrderList::findOrder(int orderId) const {
     OrderNode *ptr = head;
-    while(ptr->next!=nullptr){
-        if(orderId==ptr->next->order.getOrderId()){
-            return (&ptr->next->order);
+    if(!ptr){return nullptr;}
+    while(ptr){
+        if(orderId==ptr->order.getOrderId()){
+            return (&ptr->order);
         }
         ptr = ptr->next;
     }
@@ -68,7 +81,7 @@ void OrderList::displayOrderList() const {
 
 // ------------Write your code here to complete this task-----------------
     OrderNode *ptr = head;
-    while(ptr->next!=nullptr){
+    while(ptr){
         ptr->order.displayOrder();
         ptr = ptr->next;
     }}
@@ -79,11 +92,12 @@ void OrderList::displayOrdersForBuyer(int buyerId) const {
 // ------------Write your code here to complete this task-----------------
     bool found = 0;
     OrderNode *ptr = head;
-    while(ptr->next){
-        if(ptr->next->buyer.getBuyerId()==buyerId){
-            ptr->next->order.displayOrder();
+    while(ptr){
+        if(ptr->buyer.getBuyerId()==buyerId){
+            ptr->order.displayOrder();
             return;
         }
+        ptr=ptr->next;
     }
 // ---------------------- provided code: DO NOT MODIFY --------------------------
     if (!found) {

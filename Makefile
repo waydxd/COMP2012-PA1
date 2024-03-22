@@ -1,23 +1,30 @@
-ASGN_NAME = pa1
-SRCS = main.cpp Menu.cpp Order.cpp OrderList.cpp Buyer.cpp Food.cpp
+CPPFLAGS = -std=c++11 -g -Wall -fsanitize=address,undefined,leak
 
-# Definition of variables
-CPPFLAGS = -std=c++11 -Wall
-OBJS = $(SRCS:.cpp=.o)
-DEPS = $(SRCS:.cpp=.d)
-EXE = $(ASGN_NAME).exe
+SHARED  = Menu.cpp Order.cpp OrderList.cpp Buyer.cpp Food.cpp
+SRCS	= main.cpp $(SHARED)
+SRCS_TEST = main_test.cpp $(SHARED)
+OBJS	= $(SRCS:.cpp=.o)
+OBJS_TEST = $(SRCS_TEST:.cpp=.o)
+DEPS	= $(OBJS:.o=.d)
+DEPS_TEST = $(OBJS_TEST:.o=.d)
 
-# Rules: 
-# target: dependencies
-#   command used to create the target
-$(EXE): $(OBJS) 
-	g++ $(CPPFLAGS) -o $@ $(OBJS)
+all: PA1.exe 
+
+PA1.exe: $(OBJS) 
+	g++ $(CPPFLAGS) -o $@ $^
+
+test: PA1_test.exe
+
+PA1_test.exe: $(OBJS_TEST)
+	g++ $(CPPFLAGS) -o $@ $^
 
 # To include the .d dependency files
--include $(DEPS)
+-include $(DEPS) $(DEPS_TEST)
 
-# -MMD -MP creates the .d dependency files
-.cpp.o:; g++ $(CPPFLAGS) -MMD -MP -c $<
+%.o: %.cpp
+	g++ $(CPPFLAGS) -MMD -MP -c $< -o $@
 
-# Windows: change 'rm' to 'del'
-clean:;	rm $(EXE) $(OBJS) $(DEPS)
+clean:;
+	rm *.o *.exe *.d
+# del *.o *.exe *.d  #for Windows
+
