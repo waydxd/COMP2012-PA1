@@ -1,4 +1,4 @@
-CPPFLAGS = -std=c++11 -g -Wall -fsanitize=address,leak,undefined
+CPPFLAGS = -std=c++11 -g -Wall -fsanitize=address,undefined
 
 SHARED  = Menu.cpp Order.cpp OrderList.cpp Buyer.cpp Food.cpp
 SRCS	= main.cpp $(SHARED)
